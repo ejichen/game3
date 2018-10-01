@@ -61,6 +61,7 @@ Load< GLuint > blur_program(LoadTagDefault, [](){
 		"#version 330\n"
 		"uniform sampler2D tex;\n"
 		"out vec4 fragColor;\n"
+		"vec2 unit = vec2(3.0, 3.0);\n"
 		"void main() {\n"
 		"	vec2 at = (gl_FragCoord.xy - 0.5 * textureSize(tex, 0)) / textureSize(tex, 0).y;\n"
 		//make blur amount more near the edges and less in the middle:
@@ -71,13 +72,38 @@ Load< GLuint > blur_program(LoadTagDefault, [](){
 		"		fract(dot(gl_FragCoord.xy ,vec2(12.9898,78.233))),\n"
 		"		fract(dot(gl_FragCoord.xy ,vec2(96.3869,-27.5796)))\n"
 		"	));\n"
-		//do a four-pixel average to blur:
+		// //do a four-pixel average to blur:
+		// "	vec4 blur =\n"
+		// "		+ 0.25 * texture(tex, (gl_FragCoord.xy + vec2(ofs.x,ofs.y)) / textureSize(tex, 0))\n"
+		// "		+ 0.25 * texture(tex, (gl_FragCoord.xy + vec2(-ofs.y,ofs.x)) / textureSize(tex, 0))\n"
+		// "		+ 0.25 * texture(tex, (gl_FragCoord.xy + vec2(-ofs.x,-ofs.y)) / textureSize(tex, 0))\n"
+		// "		+ 0.25 * texture(tex, (gl_FragCoord.xy + vec2(ofs.y,-ofs.x)) / textureSize(tex, 0))\n"
+		// "	;\n"
 		"	vec4 blur =\n"
-		"		+ 0.25 * texture(tex, (gl_FragCoord.xy + vec2(ofs.x,ofs.y)) / textureSize(tex, 0))\n"
-		"		+ 0.25 * texture(tex, (gl_FragCoord.xy + vec2(-ofs.y,ofs.x)) / textureSize(tex, 0))\n"
-		"		+ 0.25 * texture(tex, (gl_FragCoord.xy + vec2(-ofs.x,-ofs.y)) / textureSize(tex, 0))\n"
-		"		+ 0.25 * texture(tex, (gl_FragCoord.xy + vec2(ofs.y,-ofs.x)) / textureSize(tex, 0))\n"
+		"		+ 0.227027 * texture(tex, (gl_FragCoord.xy) / textureSize(tex, 0))\n"
+		"		+ 0.227027 * texture(tex, (gl_FragCoord.xy) / textureSize(tex, 0))\n"
+		"		+ 0.1945946 * texture(tex, (gl_FragCoord.xy + unit) / textureSize(tex, 0))\n"
+		"		+ 0.1945946 * texture(tex, (gl_FragCoord.xy - unit) / textureSize(tex, 0))\n"
+		"		+ 0.1216216 * texture(tex, (gl_FragCoord.xy + 2*unit) / textureSize(tex, 0))\n"
+		"		+ 0.1216216 * texture(tex, (gl_FragCoord.xy - 2*unit) / textureSize(tex, 0))\n"
+		"		+ 0.054054 * texture(tex, (gl_FragCoord.xy + 3*unit) / textureSize(tex, 0))\n"
+		"		+ 0.054054 * texture(tex, (gl_FragCoord.xy - 3*unit) / textureSize(tex, 0))\n"
+		"		+ 0.016216 * texture(tex, (gl_FragCoord.xy + 4*unit) / textureSize(tex, 0))\n"
+		"		+ 0.016216 * texture(tex, (gl_FragCoord.xy - 4*unit) / textureSize(tex, 0))\n"
 		"	;\n"
+		// "	blur =\n"
+		// "		+ 0.227027 * texture(tex, (gl_FragCoord.xy) / textureSize(tex, 0))\n"
+		// "		+ 0.227027 * texture(tex, (gl_FragCoord.xy) / textureSize(tex, 0))\n"
+		// "		+ 0.1945946 * texture(tex, (gl_FragCoord.xy + unit) / textureSize(tex, 0))\n"
+		// "		+ 0.1945946 * texture(tex, (gl_FragCoord.xy - unit) / textureSize(tex, 0))\n"
+		// "		+ 0.1216216 * texture(tex, (gl_FragCoord.xy + 2*unit) / textureSize(tex, 0))\n"
+		// "		+ 0.1216216 * texture(tex, (gl_FragCoord.xy - 2*unit) / textureSize(tex, 0))\n"
+		// "		+ 0.054054 * texture(tex, (gl_FragCoord.xy + 3*unit) / textureSize(tex, 0))\n"
+		// "		+ 0.054054 * texture(tex, (gl_FragCoord.xy - 3*unit) / textureSize(tex, 0))\n"
+		// "		+ 0.016216 * texture(tex, (gl_FragCoord.xy + 4*unit) / textureSize(tex, 0))\n"
+		// "		+ 0.016216 * texture(tex, (gl_FragCoord.xy - 4*unit) / textureSize(tex, 0))\n"
+		// "	;\n"
+		// (0.227027, 0.1945946, 0.1216216, 0.054054, 0.016216)
 		"	fragColor = vec4(blur.rgb, 1.0);\n" //blur;\n"
 		"}\n"
 	);
@@ -124,7 +150,7 @@ Load< GLuint > white_tex(LoadTagDefault, [](){
 	GLuint tex = 0;
 	glGenTextures(1, &tex);
 	glBindTexture(GL_TEXTURE_2D, tex);
-	glm::u8vec4 white(0xff, 0xff, 0xff, 0xff);
+	glm::u8vec4 white(0x00, 0x00, 0x00, 0xff);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, glm::value_ptr(white));
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -218,11 +244,7 @@ Load< Scene > scene(LoadTagDefault, [](){
 		Scene::Object *obj = s.new_object(t);
 
 		obj->programs[Scene::Object::ProgramTypeDefault] = texture_program_info;
-		if (t->name == "Platform") {
-			obj->programs[Scene::Object::ProgramTypeDefault].textures[0] = *wood_tex;
-		} else if (t->name == "Pedestal") {
-			obj->programs[Scene::Object::ProgramTypeDefault].textures[0] = *marble_tex;
-		} else if (t->name == "CubeBlue") {
+		if (t->name == "CubeBlue") {
 			obj->programs[Scene::Object::ProgramTypeDefault].textures[0] = *blue_tex;
 		}else if (t->name == "CubeRed") {
 			obj->programs[Scene::Object::ProgramTypeDefault].textures[0] = *red_tex;
@@ -272,7 +294,7 @@ Load< Scene > scene(LoadTagDefault, [](){
 	for (Scene::Lamp *l = ret->first_lamp; l != nullptr; l = l->alloc_next) {
 		if (l->transform->name == "Spot") {
 			if (spot) throw std::runtime_error("Multiple 'Spot' objects in scene.");
-			if (l->type != Scene::Lamp::Spot) throw std::runtime_error("Lamp 'Spot' is not a spotlight.");
+			// if (l->type != Scene::Lamp::Spot) throw std::runtime_error("Lamp 'Spot' is not a spotlight.");
 			spot = l;
 		}
 	}
