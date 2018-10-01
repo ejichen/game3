@@ -44,18 +44,7 @@ TextureProgram::TextureProgram() {
 		"in vec4 color;\n"
 		"in vec2 texCoord;\n"
 		"in vec4 spotPosition;\n"
-		"float brightness;\n"
-		"vec2 tex_offset;\n"
-		"vec3 result;\n"
-
-		"uniform bool horizontal;\n"
-		"uniform float weight[5] = float[] (0.227027, 0.1945946, 0.1216216, 0.054054, 0.016216);\n"
 		"out vec4 fragColor;\n"
-		"out vec4 bloomColor;\n"
-		"out vec4 brightColor;\n"
-		"out vec4 bloomBlurRes;\n"
-
-
 		"void main() {\n"
 		"	vec3 total_light = vec3(0.0, 0.0, 0.0);\n"
 		"	vec3 n = normalize(normal);\n"
@@ -81,24 +70,7 @@ TextureProgram::TextureProgram() {
 		"	}\n"
 
 		"	fragColor = texture(tex, texCoord) * vec4(color.rgb * total_light, color.a);\n"
-		" bloomColor = texture(tex, texCoord);\n"
-		" brightness = dot(bloomColor.rgb, vec3(0.2126, 0.7152, 0.0722));\n"
-		" if(brightness > 0.7) brightColor = vec4(fragColor.rgb, 1.0);\n"
-    " else brightColor = vec4(0.0, 0.0, 0.0, 1.0);\n"
 
-		"	tex_offset = 1.0 / textureSize(tex, 0); \n"
-		" result = texture(tex, texCoord).rgb * weight[0]; \n"
-		"	for(int i = 1; i < 5; ++i)\n"
-		"	{\n"
-		"   result += texture(tex, texCoord + vec2(tex_offset.x * i, 0.0)).rgb * weight[i];\n"
-		"   result += texture(tex, texCoord - vec2(tex_offset.x * i, 0.0)).rgb * weight[i];\n"
-		" }\n"
-		" for(int i = 1; i < 5; ++i)\n"
-		" {\n"
-		"   result += texture(tex, texCoord + vec2(0.0, tex_offset.y * i)).rgb * weight[i];\n"
-		"   result += texture(tex, texCoord - vec2(0.0, tex_offset.y * i)).rgb * weight[i];\n"
-		" }\n"
-		"	bloomBlurRes = vec4(result, 1.0);\n"
 		"}\n"
 	);
 
