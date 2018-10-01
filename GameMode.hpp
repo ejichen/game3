@@ -28,6 +28,7 @@ struct GameMode : public Mode {
 	//draw is called after update:
 	virtual void draw(glm::uvec2 const &drawable_size) override;
 
+	void light_cubes();
 	float camera_spin = 1.0f;
 	float spot_spin = 1.0f;
 	struct {

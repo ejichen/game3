@@ -262,6 +262,29 @@ Load< GLuint > dark_yellow_tex(LoadTagDefault, [](){
 
 	return new GLuint(tex);
 });
+void GameMode::light_cubes(){
+	std::cout << "hi" << std::endl;
+	// if(controls.blue){
+	// 	blue_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *blue_tex;
+	// }else{
+	// 	blue_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *dark_blue_tex;
+	// }
+	// if(controls.red){
+	// 	red_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *red_tex;
+	// }else{
+	// 	red_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *dark_red_tex;
+	// }
+	// if(controls.green){
+	// 	green_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *green_tex;
+	// }else{
+	// 	green_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *dark_green_tex;
+	// }
+	// if(controls.yellow){
+	// 	yellow_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *yellow_tex;
+	// }else{
+	// 	yellow_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *dark_yellow_tex;
+	// }
+}
 
 Scene::Transform *camera_parent_transform = nullptr;
 Scene::Camera *camera = nullptr;
@@ -436,13 +459,9 @@ void GameMode::update(float elapsed) {
 	}else{
 		yellow_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *dark_yellow_tex;
 	}
-	// if(controls.machine_play){
-
-		// for(auto& iter : play_seq){
-		// 	std::cout << iter << " " << std::endl;
-		// }
-
-	// }
+	if(controls.machine_play){
+		GameMode::light_cubes();
+	}
 
 }
 
