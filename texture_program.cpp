@@ -91,7 +91,7 @@ TextureProgram::TextureProgram() {
     "result = brightColor * weight[0]; \n"
 		// "result = brightColor;\n"
 		"for(int n = 0; n < 6; n++){\n"
-		"    if(n!=1){\n"
+		"    if(n!=0){\n"
 		"			 result /= 10;\n"
 		"      result = result * weight[0]; \n"
 		"    }\n"
@@ -111,7 +111,7 @@ TextureProgram::TextureProgram() {
 		" bloomBlurRes = vec3(1.0) - exp(result * 0.3);\n"
 		" bloomBlurRes = pow(bloomBlurRes, vec3(1.0 / 2.2));\n"
 		" combine_result = vec4(bloomBlurRes, 1.0) + fragColor;\n"
-		// " combine_result = vec4(bloomBlurRes, 1.0);\n"
+		// " combine_result = fragColor;\n"
 		// 2.2 is the value of gamma
 		"}\n"
 	);
