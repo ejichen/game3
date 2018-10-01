@@ -88,7 +88,7 @@ TextureProgram::TextureProgram() {
 		" else brightColor = vec3(0.0);\n"
 
 		"tex_offset = 1.0 / textureSize(tex, 0);\n"
-    "result = brightColor * weight[0]; \n"
+    "result = fragColor.rgb * weight[0]; \n"
 		// "result = brightColor;\n"
 		"for(int n = 0; n < 6; n++){\n"
 		"    if(n!=0){\n"

@@ -61,7 +61,7 @@ Load< GLuint > blur_program(LoadTagDefault, [](){
 		"#version 330\n"
 		"uniform sampler2D tex;\n"
 		"out vec4 fragColor;\n"
-		"vec2 unit = vec2(3.0, 3.0);\n"
+		"vec2 unit = vec2(1.0, 1.0);\n"
 		"void main() {\n"
 		"	vec2 at = (gl_FragCoord.xy - 0.5 * textureSize(tex, 0)) / textureSize(tex, 0).y;\n"
 		//make blur amount more near the edges and less in the middle:
@@ -82,29 +82,18 @@ Load< GLuint > blur_program(LoadTagDefault, [](){
 		"	vec4 blur =\n"
 		"		+ 0.227027 * texture(tex, (gl_FragCoord.xy) / textureSize(tex, 0))\n"
 		"		+ 0.227027 * texture(tex, (gl_FragCoord.xy) / textureSize(tex, 0))\n"
-		"		+ 0.1945946 * texture(tex, (gl_FragCoord.xy + unit) / textureSize(tex, 0))\n"
-		"		+ 0.1945946 * texture(tex, (gl_FragCoord.xy - unit) / textureSize(tex, 0))\n"
-		"		+ 0.1216216 * texture(tex, (gl_FragCoord.xy + 2*unit) / textureSize(tex, 0))\n"
-		"		+ 0.1216216 * texture(tex, (gl_FragCoord.xy - 2*unit) / textureSize(tex, 0))\n"
-		"		+ 0.054054 * texture(tex, (gl_FragCoord.xy + 3*unit) / textureSize(tex, 0))\n"
-		"		+ 0.054054 * texture(tex, (gl_FragCoord.xy - 3*unit) / textureSize(tex, 0))\n"
-		"		+ 0.016216 * texture(tex, (gl_FragCoord.xy + 4*unit) / textureSize(tex, 0))\n"
-		"		+ 0.016216 * texture(tex, (gl_FragCoord.xy - 4*unit) / textureSize(tex, 0))\n"
+		"		+ 0.1945946 * texture(tex, (gl_FragCoord.xy + 3*unit) / textureSize(tex, 0))\n"
+		"		+ 0.1945946 * texture(tex, (gl_FragCoord.xy - 3*unit) / textureSize(tex, 0))\n"
+		"		+ 0.1216216 * texture(tex, (gl_FragCoord.xy + 6*unit) / textureSize(tex, 0))\n"
+		"		+ 0.1216216 * texture(tex, (gl_FragCoord.xy - 6*unit) / textureSize(tex, 0))\n"
+		"		+ 0.054054 * texture(tex, (gl_FragCoord.xy + 9*unit) / textureSize(tex, 0))\n"
+		"		+ 0.054054 * texture(tex, (gl_FragCoord.xy - 9*unit) / textureSize(tex, 0))\n"
+		"		+ 0.016216 * texture(tex, (gl_FragCoord.xy + 12*unit) / textureSize(tex, 0))\n"
+		"		+ 0.016216 * texture(tex, (gl_FragCoord.xy - 12*unit) / textureSize(tex, 0))\n"
 		"	;\n"
-		// "	blur =\n"
-		// "		+ 0.227027 * texture(tex, (gl_FragCoord.xy) / textureSize(tex, 0))\n"
-		// "		+ 0.227027 * texture(tex, (gl_FragCoord.xy) / textureSize(tex, 0))\n"
-		// "		+ 0.1945946 * texture(tex, (gl_FragCoord.xy + unit) / textureSize(tex, 0))\n"
-		// "		+ 0.1945946 * texture(tex, (gl_FragCoord.xy - unit) / textureSize(tex, 0))\n"
-		// "		+ 0.1216216 * texture(tex, (gl_FragCoord.xy + 2*unit) / textureSize(tex, 0))\n"
-		// "		+ 0.1216216 * texture(tex, (gl_FragCoord.xy - 2*unit) / textureSize(tex, 0))\n"
-		// "		+ 0.054054 * texture(tex, (gl_FragCoord.xy + 3*unit) / textureSize(tex, 0))\n"
-		// "		+ 0.054054 * texture(tex, (gl_FragCoord.xy - 3*unit) / textureSize(tex, 0))\n"
-		// "		+ 0.016216 * texture(tex, (gl_FragCoord.xy + 4*unit) / textureSize(tex, 0))\n"
-		// "		+ 0.016216 * texture(tex, (gl_FragCoord.xy - 4*unit) / textureSize(tex, 0))\n"
-		// "	;\n"
 		// (0.227027, 0.1945946, 0.1216216, 0.054054, 0.016216)
 		"	fragColor = vec4(blur.rgb, 1.0);\n" //blur;\n"
+		" fragColor = fragColor + fragColor;\n"
 		"}\n"
 	);
 
@@ -146,12 +135,12 @@ Load< GLuint > marble_tex(LoadTagDefault, [](){
 	return new GLuint(load_texture(data_path("textures/marble.png")));
 });
 
-Load< GLuint > white_tex(LoadTagDefault, [](){
+Load< GLuint > black_tex(LoadTagDefault, [](){
 	GLuint tex = 0;
 	glGenTextures(1, &tex);
 	glBindTexture(GL_TEXTURE_2D, tex);
-	glm::u8vec4 white(0x00, 0x00, 0x00, 0xff);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, glm::value_ptr(white));
+	glm::u8vec4 black(0x00, 0x00, 0x00, 0xff);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, glm::value_ptr(black));
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -253,7 +242,7 @@ Load< Scene > scene(LoadTagDefault, [](){
 		}else if (t->name == "CubeYellow") {
 			obj->programs[Scene::Object::ProgramTypeDefault].textures[0] = *yellow_tex;
 		} else {
-			obj->programs[Scene::Object::ProgramTypeDefault].textures[0] = *white_tex;
+			obj->programs[Scene::Object::ProgramTypeDefault].textures[0] = *black_tex;
 		}
 
 		obj->programs[Scene::Object::ProgramTypeShadow] = depth_program_info;
