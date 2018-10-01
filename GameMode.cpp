@@ -413,6 +413,7 @@ bool GameMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 			}
 			controls.machine_play = (evt.type == SDL_KEYDOWN);
 			std::cout << "done sequencing " << length_rand <<std::endl;
+			done_sequence = true;
 			return true;
 		}
 	}
@@ -459,7 +460,8 @@ void GameMode::update(float elapsed) {
 	}else{
 		yellow_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *dark_yellow_tex;
 	}
-	if(controls.machine_play){
+	if(controls.machine_play && done_sequence){
+		done_sequence = false;
 		GameMode::light_cubes();
 	}
 

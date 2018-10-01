@@ -36,9 +36,9 @@ struct GameMode : public Mode {
 		bool red = false;
 		bool yellow = false;
 		bool green = false;
-		bool machine_play = true;
+		bool machine_play = false;
 	} controls;
-
+	bool done_sequence = false;
 	std::vector<int> play_seq;
 
 };
