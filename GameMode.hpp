@@ -30,4 +30,10 @@ struct GameMode : public Mode {
 
 	float camera_spin = 1.0f;
 	float spot_spin = 1.0f;
+	struct {
+		bool blue = false;
+		bool red = false;
+		bool yellow = false;
+		bool green = false;
+	} controls;
 };
