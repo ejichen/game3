@@ -21,6 +21,7 @@
 #include <map>
 #include <cstddef>
 #include <random>
+#include <time.h>
 
 
 Load< MeshBuffer > meshes(LoadTagDefault, [](){
@@ -379,6 +380,19 @@ bool GameMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 		}
 
 	}
+	if (evt.type == SDL_KEYDOWN ){
+		if (evt.key.keysym.scancode == SDL_SCANCODE_S) {
+			srand (time(NULL));
+			int length_rand = rand()%5 + 3;
+			play_seq.reserve(length_rand);
+			for(int i = 0; i < length_rand; i++){
+				play_seq.push_back(rand()%4);
+			}
+			controls.machine_play = (evt.type == SDL_KEYDOWN);
+			std::cout << "done sequencing " << length_rand <<std::endl;
+			return true;
+		}
+	}
 
 	if (evt.type == SDL_KEYDOWN || evt.type == SDL_KEYUP ) {
 		if (evt.key.keysym.scancode == SDL_SCANCODE_UP ) {
@@ -391,7 +405,7 @@ bool GameMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 			controls.yellow = (evt.type == SDL_KEYDOWN);
 			return true;
 		} else if (evt.key.keysym.scancode == SDL_SCANCODE_RIGHT ) {
-			controls.green= (evt.type == SDL_KEYDOWN);
+			controls.green = (evt.type == SDL_KEYDOWN);
 			return true;
 		}
 	}
@@ -422,6 +436,13 @@ void GameMode::update(float elapsed) {
 	}else{
 		yellow_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *dark_yellow_tex;
 	}
+	// if(controls.machine_play){
+
+		// for(auto& iter : play_seq){
+		// 	std::cout << iter << " " << std::endl;
+		// }
+
+	// }
 
 }
 
