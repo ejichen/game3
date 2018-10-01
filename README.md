@@ -61,7 +61,7 @@ Before you dive into the code, it helps to understand the overall structure of t
     - ```Load.hpp``` asset loading system. Very useful for OpenGL assets.
     - ```MeshBuffer.hpp``` code to load mesh data in a variety of formats (and create vertex array objects to bind it to program attributes).
     - ```data_path.hpp``` contains a helper function that allows you to specify paths relative to the executable (instead of the current working directory). Very useful when loading assets.
-    - ```draw_text.hpp``` draws text (limited to capital letters + *) to the screen.
+    - ```draw_text.hpp``` draws text (limited to capital letters + *) to the screen.*
     - ```compile_program.hpp``` compiles OpenGL shader programs.
     - ```load_save_png.hpp``` load and save PNG images.
 - Files you probably don't need to read or edit:
