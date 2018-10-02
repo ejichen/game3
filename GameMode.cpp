@@ -22,7 +22,8 @@
 #include <cstddef>
 #include <random>
 #include <time.h>
-
+#include <ctime>
+#include <chrono>
 
 Load< MeshBuffer > meshes(LoadTagDefault, [](){
 	return new MeshBuffer(data_path("vignette.pnct"));
@@ -262,29 +263,7 @@ Load< GLuint > dark_yellow_tex(LoadTagDefault, [](){
 
 	return new GLuint(tex);
 });
-void GameMode::light_cubes(){
-	std::cout << "hi" << std::endl;
-	// if(controls.blue){
-	// 	blue_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *blue_tex;
-	// }else{
-	// 	blue_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *dark_blue_tex;
-	// }
-	// if(controls.red){
-	// 	red_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *red_tex;
-	// }else{
-	// 	red_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *dark_red_tex;
-	// }
-	// if(controls.green){
-	// 	green_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *green_tex;
-	// }else{
-	// 	green_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *dark_green_tex;
-	// }
-	// if(controls.yellow){
-	// 	yellow_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *yellow_tex;
-	// }else{
-	// 	yellow_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *dark_yellow_tex;
-	// }
-}
+
 
 Scene::Transform *camera_parent_transform = nullptr;
 Scene::Camera *camera = nullptr;
@@ -294,6 +273,7 @@ Scene::Object *blue_cube = nullptr;
 Scene::Object *red_cube = nullptr;
 Scene::Object *green_cube = nullptr;
 Scene::Object *yellow_cube = nullptr;
+float counter = 1.0;
 
 Load< Scene > scene(LoadTagDefault, [](){
 	Scene *ret = new Scene;
@@ -385,6 +365,30 @@ GameMode::GameMode() {
 
 GameMode::~GameMode() {
 }
+// void GameMode::counter(){
+//
+//
+// }
+void GameMode::light_cubes(int idx){
+	switch (idx)
+{
+    case 0: // code to be executed if n = 1;
+			controls.blue = true;
+      break;
+    case 1: // code to be executed if n = 2;
+			controls.red = true;
+      break;
+		case 2:
+			controls.green = true;
+			break;
+		case 3:
+			controls.yellow = true;
+			break;
+    default: // code to be executed if n doesn't match any cases
+		break;
+}
+
+}
 
 bool GameMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size) {
 	//ignore any keys that are the result of automatic key repeat:
@@ -411,9 +415,15 @@ bool GameMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 			for(int i = 0; i < length_rand; i++){
 				play_seq.push_back(rand()%4);
 			}
+			for(auto& iter:play_seq){
+				std::cout << iter << " " ;
+			}
+			std::cout <<  std::endl;
+			// copy the play seq to the play_seq_cpy
+			play_seq_cpy.assign(play_seq.begin(), play_seq.end());
 			controls.machine_play = (evt.type == SDL_KEYDOWN);
-			std::cout << "done sequencing " << length_rand <<std::endl;
 			done_sequence = true;
+
 			return true;
 		}
 	}
@@ -442,27 +452,53 @@ void GameMode::update(float elapsed) {
 	spot_parent_transform->rotation = glm::angleAxis(spot_spin, glm::vec3(0.0f, 0.0f, 1.0f));
 	if(controls.blue){
 		blue_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *blue_tex;
-	}else{
+	}
+	if(!controls.blue){
 		blue_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *dark_blue_tex;
 	}
 	if(controls.red){
 		red_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *red_tex;
-	}else{
+	}
+	if(!controls.red){
 		red_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *dark_red_tex;
 	}
 	if(controls.green){
 		green_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *green_tex;
-	}else{
+	}
+	if(!controls.green){
 		green_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *dark_green_tex;
 	}
 	if(controls.yellow){
 		yellow_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *yellow_tex;
-	}else{
+	}
+	if(!controls.yellow ){
 		yellow_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *dark_yellow_tex;
 	}
 	if(controls.machine_play && done_sequence){
-		done_sequence = false;
-		GameMode::light_cubes();
+
+		if(play_seq.empty()){
+			controls.machine_play = false;
+			done_sequence = false;
+			controls.reset = true;
+		}
+		GameMode::light_cubes(play_seq.front());
+
+		counter -= elapsed;
+		if (counter < 0.0) controls.reset = true;
+		// std::cout << "done_sequence: " << done_sequence << std::endl;
+
+
+	}
+	if(controls.reset){
+		controls.yellow = false;
+		controls.blue = false;
+		controls.red = false;
+		controls.green = false;
+		if(!play_seq.empty()) play_seq.erase(play_seq.begin());
+		else play_seq.clear();
+		// play_seq.shrink_to_fit();
+		counter = 1.0;
+		controls.reset = false;
 	}
 
 }

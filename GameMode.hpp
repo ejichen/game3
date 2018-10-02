@@ -27,8 +27,8 @@ struct GameMode : public Mode {
 
 	//draw is called after update:
 	virtual void draw(glm::uvec2 const &drawable_size) override;
-
-	void light_cubes();
+	// void counter();
+	void light_cubes(int idx);
 	float camera_spin = 1.0f;
 	float spot_spin = 1.0f;
 	struct {
@@ -37,8 +37,10 @@ struct GameMode : public Mode {
 		bool yellow = false;
 		bool green = false;
 		bool machine_play = false;
+		bool reset = false;
 	} controls;
 	bool done_sequence = false;
 	std::vector<int> play_seq;
+	std::vector<int> play_seq_cpy;
 
 };
