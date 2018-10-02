@@ -8,9 +8,8 @@
 #include <SDL.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
-
 #include <vector>
-
+#include <string>
 // The 'GameMode' mode is the main gameplay mode:
 
 struct GameMode : public Mode {
@@ -46,4 +45,5 @@ struct GameMode : public Mode {
 	std::vector<int> play_seq;
 	std::vector<int> play_seq_cpy;
 	enum Color { blue, red, green, yellow };
+	std::string color_string[4] = {"blue", "red", "green", "yellow"};
 };
