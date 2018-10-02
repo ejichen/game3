@@ -424,7 +424,7 @@ bool GameMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 		}
 
 	}
-	if (evt.type == SDL_KEYDOWN ){
+	if (play_seq.empty() && evt.type == SDL_KEYDOWN ){
 		if(play_seq_cpy.size() != play_seq.size()){
 			controls.continue_play = true;
 		}
@@ -450,7 +450,7 @@ bool GameMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 		}
 	}
 
-	if (evt.type == SDL_KEYDOWN || evt.type == SDL_KEYUP ) {
+	if (play_seq.empty() && (evt.type == SDL_KEYDOWN || evt.type == SDL_KEYUP )) {
 		if (evt.key.keysym.scancode == SDL_SCANCODE_UP ) {
 			controls.red = (evt.type == SDL_KEYDOWN);
 			return true;
