@@ -436,10 +436,10 @@ bool GameMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 			for(int i = 0; i < length_rand; i++){
 				play_seq.push_back(rand()%4);
 			}
-			for(auto& iter:play_seq){
-				std::cout << color_string[iter] << " " ;
-			}
-			std::cout << std::endl;
+			// for(auto& iter:play_seq){
+			// 	std::cout << color_string[iter] << " " ;
+			// }
+			// std::cout << std::endl;
 			// copy the play seq to the play_seq_cpy
 			play_seq_cpy.assign(play_seq.begin(), play_seq.end());
 
@@ -504,7 +504,7 @@ void GameMode::update(float elapsed) {
 			done_sequence = false;
 			controls.reset = true;
 			controls.start_play = true;
-			std::cout << "It's your turn." << cur_color <<std::endl;
+			std::cout << "It's your turn." <<std::endl;
 		}
 		GameMode::light_cubes(play_seq.front());
 		// if the count down time has passed 1 sec,
@@ -538,10 +538,10 @@ void GameMode::update(float elapsed) {
 		// if the player entered worng commands, stop the process
 		// if the player entered the commands correctly, the process continues
 		if(play_seq_cpy.front() == cur_color){
-			std::cout << "correct color input: " << color_string[cur_color] <<std::endl;
+			std::cout << "correct color input! " << std::endl;
 		}
 		else{
-			std::cout << "incorrect color input: " << color_string[cur_color] <<std::endl;
+			std::cout << "incorrect color " << std::endl;
 			std::cout << "Please start a new challenge by pressing s!" <<std::endl;
 			controls.start_play = false;
 			play_seq_cpy.clear();
