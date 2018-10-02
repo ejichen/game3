@@ -20,7 +20,7 @@ If the sequence matches, the player wins this round. If the order is wrong, the 
 
 Changes From The Design Document:
 
-The tempo in the game is not important. The player only needs to matches the order.
+The tempo in the game is not important. The player only needs to matches the order. Also, the game uses non-instrument sound effects.
 
 Good / Bad / Ugly Code:
 
