@@ -13,7 +13,7 @@
 #include "load_save_png.hpp"
 #include "texture_program.hpp"
 #include "depth_program.hpp"
-
+#include "Sound.hpp"
 #include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
@@ -264,6 +264,14 @@ Load< GLuint > dark_yellow_tex(LoadTagDefault, [](){
 	return new GLuint(tex);
 });
 
+// starting to load sound
+Load< Sound::Sample > old_man(LoadTagDefault, [](){
+	return new Sound::Sample(data_path("old_man_2.wav"));
+});
+
+Load< Sound::Sample > dinosaur(LoadTagDefault, [](){
+	return new Sound::Sample(data_path("dinosaur_2.wav"));
+});
 
 Scene::Transform *camera_parent_transform = nullptr;
 Scene::Camera *camera = nullptr;
@@ -275,6 +283,7 @@ Scene::Object *green_cube = nullptr;
 Scene::Object *yellow_cube = nullptr;
 float counter = 1.0;
 int cur_color;
+Sound::LoopOrOnce id = Sound::Once;
 
 Load< Scene > scene(LoadTagDefault, [](){
 	Scene *ret = new Scene;
@@ -373,10 +382,7 @@ GameMode::GameMode() {
 
 GameMode::~GameMode() {
 }
-// void GameMode::counter(){
-//
-//
-// }
+
 void GameMode::light_cubes(int idx){
 	switch (idx)
 {
@@ -419,6 +425,7 @@ bool GameMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 		if(play_seq_cpy.size() != play_seq.size()){
 			controls.continue_play = true;
 		}
+		// press key s to generate random sequence for the challenge
 		if (evt.key.keysym.scancode == SDL_SCANCODE_S) {
 			srand (time(NULL));
 			int length_rand = rand()%5 + 3;
@@ -464,14 +471,14 @@ void GameMode::update(float elapsed) {
 	spot_parent_transform->rotation = glm::angleAxis(spot_spin, glm::vec3(0.0f, 0.0f, 1.0f));
 	if(controls.blue){
 		blue_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *blue_tex;
-	}
-	if(!controls.blue){
+		if(counter > 0.92) old_man->play(blue_cube->transform->position, 2.0f, id);
+	}else{
 		blue_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *dark_blue_tex;
 	}
 	if(controls.red){
 		red_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *red_tex;
-	}
-	if(!controls.red){
+		if(counter > 0.92) dinosaur->play(red_cube->transform->position, 1.0f, id);
+	}else{
 		red_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *dark_red_tex;
 	}
 	if(controls.green){

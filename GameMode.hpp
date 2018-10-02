@@ -46,4 +46,5 @@ struct GameMode : public Mode {
 	std::vector<int> play_seq_cpy;
 	enum Color { blue, red, green, yellow };
 	std::string color_string[4] = {"blue", "red", "green", "yellow"};
+
 };
