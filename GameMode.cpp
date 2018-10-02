@@ -272,6 +272,13 @@ Load< Sound::Sample > old_man(LoadTagDefault, [](){
 Load< Sound::Sample > dinosaur(LoadTagDefault, [](){
 	return new Sound::Sample(data_path("dinosaur_2.wav"));
 });
+Load< Sound::Sample > frog(LoadTagDefault, [](){
+	return new Sound::Sample(data_path("frog_2.wav"));
+});
+Load< Sound::Sample > apple(LoadTagDefault, [](){
+	return new Sound::Sample(data_path("apple.wav"));
+});
+
 
 Scene::Transform *camera_parent_transform = nullptr;
 Scene::Camera *camera = nullptr;
@@ -477,24 +484,24 @@ void GameMode::update(float elapsed) {
 	}
 	if(controls.red){
 		red_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *red_tex;
-		if(counter > 0.92) dinosaur->play(red_cube->transform->position, 1.0f, id);
+		if(counter > 0.92) apple->play(red_cube->transform->position, 1.0f, id);
 	}else{
 		red_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *dark_red_tex;
 	}
 	if(controls.green){
 		green_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *green_tex;
-	}
-	if(!controls.green){
+		if(counter > 0.92) frog->play(green_cube->transform->position, 1.0f, id);
+	}else{
 		green_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *dark_green_tex;
 	}
 	if(controls.yellow){
 		yellow_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *yellow_tex;
-	}
-	if(!controls.yellow ){
+		if(counter > 0.92) dinosaur->play(yellow_cube->transform->position, 1.0f, id);
+	}else{
 		yellow_cube->programs[Scene::Object::ProgramTypeDefault].textures[0] = *dark_yellow_tex;
 	}
 	if(controls.machine_play && done_sequence){
-
+		// if the play sequnce is empty, meaning the playing procedure over
 		if(play_seq.empty()){
 			controls.machine_play = false;
 			done_sequence = false;
@@ -503,7 +510,8 @@ void GameMode::update(float elapsed) {
 			std::cout << "It's your turn." << cur_color <<std::endl;
 		}
 		GameMode::light_cubes(play_seq.front());
-
+		// if the count down time has passed 1 sec,
+		//reset all the scene and pop out the first element in sequence play
 		counter -= elapsed;
 		if (counter < 0.0) controls.reset = true;
 		// std::cout << "done_sequence: " << done_sequence << std::endl;
@@ -521,7 +529,7 @@ void GameMode::update(float elapsed) {
 		counter = 1.0;
 		controls.reset = false;
 	}
-
+	// allow the user to enter commands to match the sequence
 	if(controls.continue_play && controls.start_play && (controls.blue || controls.red || controls.green || controls.yellow)){
 		controls.continue_play = false;
 
@@ -530,7 +538,7 @@ void GameMode::update(float elapsed) {
 		else if(controls.green) cur_color = Color::green;
 		else cur_color = Color::yellow;
 		// else std::cout << "ha ha " << std::endl;
-
+		// if the player entered worng commands, stop the process
 		if(play_seq_cpy.front() == cur_color){
 			std::cout << "correct color input: " << color_string[cur_color] <<std::endl;
 		}

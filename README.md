@@ -5,28 +5,36 @@ Title: (TODO: your game's title)
 
 Author: (TODO: your name)
 
-Design Document: [TODO: name of design document](TODO: link to design document)
+Design Document: [Music Bloom](http://graphics.cs.cmu.edu/courses/15-466-f18/game3-designs/ishmaelj/)
 
 Screen Shot:
 
-![Screen Shot](screenshot.png)
+![Screen Shot](game.png)
 
 How To Play:
 
-TODO: describe the controls and (if needed) goals/strategy.
+Use Up/Down/Right/Left key to light up the cubes. Press s to generate a sequence by the computer.
+After the sequence, the player has to input the commands in the exact sequence.
+If the sequence matches, the player wins this round. If the order is wrong, the player loses this round.
+
 
 Changes From The Design Document:
 
-TODO: what did you need to add/remove/modify from the original design? Why?
+The tempo in the game is not important. The player only needs to matches the order.
 
 Good / Bad / Ugly Code:
 
-TODO: provide examples of code you wrote from this project that you think is good (elegant, simple, useful), bad (hack-y, brittle, unreadable), and ugly (particularly inelegant). Provide a sentence or two of justification for the examples.
+Good: Use texture to do the bloom effect directly. Lock other processes when doing one of them, for example, lock the state for user input while generating the sequence by computer.
+Bad: Hard coded time for playing a sound to avoid repeatedly playing when generating the sequence.
+Ugly: Copy paste the same structure for different color texture. Probably existing a way to change the color directly by changing the parameter of the objects.
 
 
 
 Sound Credit:
 [Old Man Sound Effect](https://www.youtube.com/watch?v=-4fgsjUY35c&frags=pl%2Cwn)
+[Frog Sound Effect](https://www.saveclipbro.com/conversion-download/042cc442-c5ed-11e8-8723-14dda9d5b093)
+[Dinosaur Sound Effect](https://www.youtube.com/watch?v=2m62ki7EItA&frags=pl%2Cwn)
+[Apple Sound Effect](https://www.youtube.com/watch?v=ZN5PoW7_kdA&frags=pl%2Cwn)
 
 
 # Changes In This Base Code
