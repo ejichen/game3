@@ -10,3 +10,7 @@ dist/SDL2.dll
 kit-libs-win
 kit-libs-osx
 kit-libs-linux
+*.cpy
+meshes/vignette_original.blend
+export
+

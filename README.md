@@ -1,9 +1,9 @@
 # Game Information
 (Note: fill in this portion with information about your game.)
 
-Title: (TODO: your game's title)
+Title: Music Bloom
 
-Author: (TODO: your name)
+Author: I-Chen Jwo (ijwo)
 
 Design Document: [Music Bloom](http://graphics.cs.cmu.edu/courses/15-466-f18/game3-designs/ishmaelj/)
 
@@ -25,7 +25,11 @@ The tempo in the game is not important. The player only needs to matches the ord
 Good / Bad / Ugly Code:
 
 Good: Use texture to do the bloom effect directly. Lock other processes when doing one of them, for example, lock the state for user input while generating the sequence by computer.
-Bad: Hard coded time for playing a sound to avoid repeatedly playing when generating the sequence.
+
+
+Bad: Hard coded time for playing a sound to avoid repeatedly playing when generating the sequence. Another thing is that if you press the key too long, the sound will be repeatedly played, which is kind of noisy.
+
+
 Ugly: Copy paste the same structure for different color texture. Probably existing a way to change the color directly by changing the parameter of the objects.
 
 
