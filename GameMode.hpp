@@ -38,9 +38,12 @@ struct GameMode : public Mode {
 		bool green = false;
 		bool machine_play = false;
 		bool reset = false;
+		bool start_play = false;
+		bool continue_play = false;
 	} controls;
 	bool done_sequence = false;
+	bool win = false;
 	std::vector<int> play_seq;
 	std::vector<int> play_seq_cpy;
-
+	enum Color { blue, red, green, yellow };
 };

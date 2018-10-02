@@ -274,6 +274,7 @@ Scene::Object *red_cube = nullptr;
 Scene::Object *green_cube = nullptr;
 Scene::Object *yellow_cube = nullptr;
 float counter = 1.0;
+int cur_color;
 
 Load< Scene > scene(LoadTagDefault, [](){
 	Scene *ret = new Scene;
@@ -408,6 +409,9 @@ bool GameMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 
 	}
 	if (evt.type == SDL_KEYDOWN ){
+		if(play_seq_cpy.size() != play_seq.size()){
+			controls.continue_play = true;
+		}
 		if (evt.key.keysym.scancode == SDL_SCANCODE_S) {
 			srand (time(NULL));
 			int length_rand = rand()%5 + 3;
@@ -418,9 +422,13 @@ bool GameMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 			for(auto& iter:play_seq){
 				std::cout << iter << " " ;
 			}
-			std::cout <<  std::endl;
+			std::cout << std::endl;
 			// copy the play seq to the play_seq_cpy
 			play_seq_cpy.assign(play_seq.begin(), play_seq.end());
+			for(auto& iter:play_seq_cpy){
+				std::cout << iter << " " ;
+			}
+			std::cout << std::endl;
 			controls.machine_play = (evt.type == SDL_KEYDOWN);
 			done_sequence = true;
 
@@ -480,6 +488,7 @@ void GameMode::update(float elapsed) {
 			controls.machine_play = false;
 			done_sequence = false;
 			controls.reset = true;
+			controls.start_play = true;
 		}
 		GameMode::light_cubes(play_seq.front());
 
@@ -499,6 +508,32 @@ void GameMode::update(float elapsed) {
 		// play_seq.shrink_to_fit();
 		counter = 1.0;
 		controls.reset = false;
+	}
+
+	if(controls.continue_play && controls.start_play && (controls.blue || controls.red || controls.green || controls.yellow)){
+		controls.continue_play = false;
+
+		if(controls.blue) cur_color = Color::blue;
+		else if(controls.red) cur_color = Color::red;
+		else if(controls.green) cur_color = Color::green;
+		else cur_color = Color::yellow;
+		// else std::cout << "ha ha " << std::endl;
+
+		if(play_seq_cpy.front() == cur_color){
+			std::cout << "correct color input: " << cur_color <<std::endl;
+		}
+		else{
+			std::cout << "incorrect color input: " << cur_color <<std::endl;
+			std::cout << "Please start a new challenge by pressing s!" <<std::endl;
+			controls.start_play = false;
+			play_seq_cpy.clear();
+		}
+		if(play_seq_cpy.size() == 1){
+			std::cout << "Success in complete a sequence!" <<std::endl;
+		}
+		if(!play_seq_cpy.empty()){
+			play_seq_cpy.erase(play_seq_cpy.begin());
+		}
 	}
 
 }
