@@ -46,6 +46,7 @@ Load< GLuint > empty_vao(LoadTagDefault, [](){
 	return new GLuint(vao);
 });
 
+// blur by multiplying weight to the neighbor voxels
 Load< GLuint > blur_program(LoadTagDefault, [](){
 	GLuint program = compile_program(
 		//this draws a triangle that covers the entire screen:
@@ -74,13 +75,7 @@ Load< GLuint > blur_program(LoadTagDefault, [](){
 		"		fract(dot(gl_FragCoord.xy ,vec2(12.9898,78.233))),\n"
 		"		fract(dot(gl_FragCoord.xy ,vec2(96.3869,-27.5796)))\n"
 		"	));\n"
-		// //do a four-pixel average to blur:
-		// "	vec4 blur =\n"
-		// "		+ 0.25 * texture(tex, (gl_FragCoord.xy + vec2(ofs.x,ofs.y)) / textureSize(tex, 0))\n"
-		// "		+ 0.25 * texture(tex, (gl_FragCoord.xy + vec2(-ofs.y,ofs.x)) / textureSize(tex, 0))\n"
-		// "		+ 0.25 * texture(tex, (gl_FragCoord.xy + vec2(-ofs.x,-ofs.y)) / textureSize(tex, 0))\n"
-		// "		+ 0.25 * texture(tex, (gl_FragCoord.xy + vec2(ofs.y,-ofs.x)) / textureSize(tex, 0))\n"
-		// "	;\n"
+
 		"	vec4 blur =\n"
 		"		+ 0.227027 * texture(tex, (gl_FragCoord.xy) / textureSize(tex, 0))\n"
 		"		+ 0.227027 * texture(tex, (gl_FragCoord.xy) / textureSize(tex, 0))\n"
@@ -137,6 +132,7 @@ Load< GLuint > marble_tex(LoadTagDefault, [](){
 	return new GLuint(load_texture(data_path("textures/marble.png")));
 });
 
+// added different tectures
 Load< GLuint > black_tex(LoadTagDefault, [](){
 	GLuint tex = 0;
 	glGenTextures(1, &tex);
@@ -502,6 +498,7 @@ void GameMode::update(float elapsed) {
 	}
 	if(controls.machine_play && done_sequence){
 		// if the play sequnce is empty, meaning the playing procedure over
+		// allow the user to wnter matching commands
 		if(play_seq.empty()){
 			controls.machine_play = false;
 			done_sequence = false;
@@ -518,6 +515,7 @@ void GameMode::update(float elapsed) {
 
 
 	}
+	// the reset mode will reset the color of the cubes and the remain time in counter
 	if(controls.reset){
 		controls.yellow = false;
 		controls.blue = false;
@@ -532,13 +530,13 @@ void GameMode::update(float elapsed) {
 	// allow the user to enter commands to match the sequence
 	if(controls.continue_play && controls.start_play && (controls.blue || controls.red || controls.green || controls.yellow)){
 		controls.continue_play = false;
-
+		// check which state is activated and check whether it matches the sequence
 		if(controls.blue) cur_color = Color::blue;
 		else if(controls.red) cur_color = Color::red;
 		else if(controls.green) cur_color = Color::green;
 		else cur_color = Color::yellow;
-		// else std::cout << "ha ha " << std::endl;
 		// if the player entered worng commands, stop the process
+		// if the player entered the commands correctly, the process continues
 		if(play_seq_cpy.front() == cur_color){
 			std::cout << "correct color input: " << color_string[cur_color] <<std::endl;
 		}
@@ -548,6 +546,9 @@ void GameMode::update(float elapsed) {
 			controls.start_play = false;
 			play_seq_cpy.clear();
 		}
+		// if the play_seq_cpy only remains one element and the process is not stopped,
+		// meaning the plaayer has entered all the commands correctly, clear out the
+		// play_seq_cpy and be able to start a new process
 		if(play_seq_cpy.size() == 1){
 			std::cout << "Success in complete a sequence!" <<std::endl;
 			std::cout << "Please start a new challenge by pressing s!" <<std::endl;

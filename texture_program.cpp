@@ -45,7 +45,7 @@ TextureProgram::TextureProgram() {
 		"in vec2 texCoord;\n"
 		"in vec4 spotPosition;\n"
 		"vec4 fragColor;\n"
-
+		// build a brightness map to decide which part should generate bloom effect
 		"vec4 bloomColor;\n"
 		"vec3 brightColor;\n"
 		"float brightness;\n"
@@ -86,7 +86,8 @@ TextureProgram::TextureProgram() {
 		" brightness = dot(color.rgb, vec3(0.2126, 0.7152, 0.0722));\n"
 		" if(brightness > 0.7) brightColor = color.rgb;\n"
 		" else brightColor = vec3(0.0);\n"
-
+		// blur along the light to generate a average light surface on one object
+		// refernce: https://learnopengl.com/Advanced-Lighting/Bloom
 		"tex_offset = 1.0 / textureSize(tex, 0);\n"
     "result = fragColor.rgb * weight[0]; \n"
 		// "result = brightColor;\n"
